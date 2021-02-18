@@ -19,10 +19,18 @@ end
 @subTargets = []
 inputs = []
 
-if OsType == 'windows'
-  FfmpegPath = "#{__dir__}/ffmpeg.exe"
-else
+if system('ffmpeg -hide_banner -loglevel error -f lavfi -i testsrc -t 1 -f null -')
   FfmpegPath = 'ffmpeg'
+else
+  if OsType == 'windows'
+    FfmpegPath = "#{__dir__}/ffmpeg.exe"
+  else
+    FfmpegPath = "#{__dir__}/ffmpeg"
+  end
+  if ! system(FfmpegPath '-hide_banner -loglevel error -f lavfi -i testsrc -t 1 -f null -')
+    puts 'FFmpeg not found. Please install FFmpeg'
+    exit 1
+  end
 end
 
 def checkMime(targetFile)
@@ -79,6 +87,11 @@ def makePlainText(video,subPath)
   end
 end
 
+# Confirm options
+if options.empty?
+  puts 'Please choose caption option! -b for burnt, -e for embedded'
+  exit 1
+end
 # Gather inputs 
 ARGV.each do |input|
   inputs << input if File.file?(input)
@@ -104,9 +117,5 @@ inputs.each {|target| checkMime(target)}
   if options.include?('embed')
     embedSubs(video,subPath)
   end
-  if options.empty?
-    embedSubs(video,subPath)
-  end
-  makePlainText(video,subPath)
 end
   

@@ -27,7 +27,7 @@ else
   else
     FfmpegPath = "#{__dir__}/ffmpeg"
   end
-  if ! system(FfmpegPath '-hide_banner -loglevel error -f lavfi -i testsrc -t 1 -f null -')
+  if ! system("#{FfmpegPath} -hide_banner -loglevel error -f lavfi -i testsrc -t 1 -f null -")
     puts 'FFmpeg not found. Please install FFmpeg'
     exit 1
   end

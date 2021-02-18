@@ -53,7 +53,7 @@ end
 
 def normalizePaths(path)
   pathNorm = path.gsub('\\','/')
-  pathNorm.gsub!('C:','C\\\\\\:')
+  pathNorm.gsub!(':','\\\\\\:')
   pathNorm.gsub!(',','\\,')
   File.path(pathNorm)
 end

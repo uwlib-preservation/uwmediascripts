@@ -17,7 +17,7 @@ def compress(target)
   flacPath = "#{File.dirname(target)}/#{File.basename(target,".*")}" + '.flac'
   @cuePath = "#{File.dirname(target)}/#{File.basename(target,".*")}" + '.cue'
   tagCommand = "metaflac --preserve-modtime "
-  if @targetMetadata['media']['track'][0]['extra']['bext_Present'] == "Yes"
+  if ! @targetMetadata['media']['track'][0]['extra'].nil? && @targetMetadata['media']['track'][0]['extra']['bext_Present'] == "Yes"
     organization = @targetMetadata['media']['track'][0]['Producer']
     description = @targetMetadata['media']['track'][0]['Description']
     date = @targetMetadata['media']['track'][0]['Encoded_Date']
@@ -27,13 +27,13 @@ def compress(target)
     tagCommand += bextCommand
   end
 
-  compressCommand = "flac -f --best --keep-foreign-metadata --preserve-modtime --verify #{target}"
+  compressCommand = "flac -f --best --keep-foreign-metadata --preserve-modtime --verify '#{target}'"
   system(compressCommand)
   if File.exist?(@cuePath)
     cueCommand = "--set-tag-from-file=CUESHEET='#{@cuePath}' --import-cuesheet-from='#{@cuePath}' "
     tagCommand += cueCommand
   end
-  tagCommand += flacPath
+  tagCommand += "'#{flacPath}'"
   system(tagCommand)
 end
 
@@ -50,7 +50,7 @@ end
 
 target = ARGV[0]
 @cuePath = "#{File.dirname(target)}/#{File.basename(target,".*")}" + '.cue'
-@targetMetadata = JSON.parse(`mediainfo --Output=JSON #{target}`)
+@targetMetadata = JSON.parse(`mediainfo --Output=JSON "#{target}"`)
 
 if Mode == 'compress'
   compress(target)

@@ -2,6 +2,8 @@
 
 require 'optparse'
 require 'json'
+require 'tempfile'
+require 'fileutils'
 
 
 ARGV.options do |opts|
@@ -12,6 +14,21 @@ end
 
 targets = []
 Mode = 'help' unless defined?(Mode)
+
+def updateCue(cuePath,extension)
+  oldCue = File.readlines(cuePath)
+  newName = File.basename(cuePath,".*") + ".#{extension}"
+  temp = Tempfile.new
+  oldCue.each do|line|
+    if (line.include?('FILE') && line.include?('WAVE'))
+      newLine = "FILE " + '"' + newName + '"' + " WAVE\n"
+      temp << newLine
+    else
+      temp << line
+    end
+  end
+  FileUtils.mv(temp.path,cuePath)
+end
 
 def compress(target)
   flacPath = "#{File.dirname(target)}/#{File.basename(target,".*")}" + '.flac'
@@ -30,6 +47,7 @@ def compress(target)
   compressCommand = "flac -f --best --keep-foreign-metadata --preserve-modtime --verify '#{target}'"
   system(compressCommand)
   if File.exist?(@cuePath)
+    updateCue(@cuePath,'flac')
     cueCommand = "--set-tag-from-file=CUESHEET='#{@cuePath}' --import-cuesheet-from='#{@cuePath}' "
     tagCommand += cueCommand
   end

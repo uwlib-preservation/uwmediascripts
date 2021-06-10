@@ -69,13 +69,13 @@ def decompress(target)
   `flac -d --keep-foreign-metadata --preserve-modtime --verify #{target}`
 end
 
-target = ARGV[0]
-@cuePath = "#{File.dirname(target)}/#{File.basename(target,".*")}" + '.cue'
-@targetMetadata = JSON.parse(`mediainfo --Output=JSON "#{target}"`)
+ARGV.each do |target|
+  @cuePath = "#{File.dirname(target)}/#{File.basename(target,".*")}" + '.cue'
+  @targetMetadata = JSON.parse(`mediainfo --Output=JSON "#{target}"`)
 
-if Mode == 'compress'
-  compress(target)
-elsif Mode=='decompress'
-  decompress(target)
+  if Mode == 'compress'
+    compress(target)
+  elsif Mode == 'decompress'
+    decompress(target)
+  end
 end
-    

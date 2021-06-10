@@ -27,6 +27,7 @@ def updateCue(cuePath,extension)
       temp << line
     end
   end
+  temp.rewind
   FileUtils.mv(temp.path,cuePath)
 end
 
@@ -52,7 +53,7 @@ def compress(target)
     tagCommand += cueCommand
   end
   tagCommand += "'#{flacPath}'"
-  system(tagCommand)
+  `#{tagCommand}`
 end
 
 def decompress(target)
@@ -61,7 +62,9 @@ def decompress(target)
     cueSheet = `#{tagCommand}`
     open(@cuePath, 'w') do |f|
       f.puts cueSheet
+      f.rewind
     end
+    updateCue(@cuePath,'wav')
   end
   `flac -d --keep-foreign-metadata --preserve-modtime --verify #{target}`
 end

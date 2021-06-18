@@ -4,7 +4,9 @@ collection_duration = 0
 target = ARGV[0].tr("\\","/")
 files = Dir.glob("#{target}/**/*")
 files.each do |file|
-  duration = JSON.parse(`mediainfo --Output=JSON #{file}`)['media']['track'][0]['Duration'].to_i
-  collection_duration += duration
+  if File.file?(file)
+    duration = JSON.parse(`mediainfo --Output=JSON #{file}`)['media']['track'][0]['Duration'].to_i
+    collection_duration += duration
+  end
 end
-puts (collection_duration/3600.00).round(1)
+puts "#{(collection_duration/3600.00).round(1)} hours"

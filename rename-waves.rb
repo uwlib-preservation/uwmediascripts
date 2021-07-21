@@ -38,7 +38,9 @@ def updateCue(cuePath,position)
       temp << line
     end
   end
-  if FileUtils.mv(temp.path,newCuePath)
+  temp.rewind
+  FileUtils.mv(temp.path,newCuePath)
+  if ! File.readlines(newCuePath).empty?
     FileUtils.rm(cuePath)
   end
 end

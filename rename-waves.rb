@@ -6,7 +6,7 @@ require 'tempfile'
 
 ARGV.options do |opts|
   opts.on("-t", "--target=val", String) { |val| @waves = Dir.glob("#{val}/*.wav") }
-  opts.on("-n", "--name=val", String) { |val| @newFileNames = File.readlines(val) }
+  opts.on("-n", "--name-file=val", String) { |val| @newFileNames = File.readlines(val) }
   opts.parse!
 end
 
@@ -48,7 +48,12 @@ end
 safetyCheck()
 wavesSorted = @waves.sort_by {|filename| File.mtime(filename) }
 wavesSorted.each_with_index do |wave,index|
-  cuePath = "#{File.dirname(wave)}/#{File.basename(wave,".*")}" + '.cue'
-  updateCue(cuePath,index) if File.exist?(cuePath)
-  FileUtils.mv(wave,"#{File.dirname(wave)}/#{@newFileNames[index].chomp}.wav")
+  newName = "#{File.dirname(wave)}/#{@newFileNames[index].chomp}.wav"
+  unless File.exist?(newName)
+    cuePath = "#{File.dirname(wave)}/#{File.basename(wave,".*")}" + '.cue'
+    updateCue(cuePath,index) if File.exist?(cuePath)
+    FileUtils.mv(wave,newName)
+  else
+    puts "File #{newName} already exists! Skipping!"
+  end
 end

@@ -5,8 +5,8 @@ require 'tempfile'
 
 
 ARGV.options do |opts|
-  opts.on("-t", "--target=val", String) { |val| @waves = Dir.glob("#{val}/*.wav") }
-  opts.on("-n", "--name-file=val", String) { |val| @newFileNames = File.readlines(val) }
+  opts.on("-t", "--target=val", String) { |val| @waves = Dir.glob("#{val.tr("\\","/")}/*.wav") }
+  opts.on("-n", "--name-file=val", String) { |val| @newFileNames = File.readlines(val.tr("\\","/")) }
   opts.parse!
 end
 
@@ -39,6 +39,7 @@ def updateCue(cuePath,position)
     end
   end
   temp.rewind
+  temp.close
   FileUtils.mv(temp.path,newCuePath)
   if ! File.readlines(newCuePath).empty?
     FileUtils.rm(cuePath)

@@ -1,7 +1,7 @@
 require 'json'
 prior_drive_info = ''
 cd_iterator = 1
-Output_dir = ARGV[0]
+Output_dir = ARGV[0].tr("\\","/")
 Drive = ARGV[1]
 
 if (Output_dir.nil? || ! File.exist?(Output_dir))
@@ -18,8 +18,12 @@ loop do
   else
     parsed_data = JSON.parse(drive_info)
     track_lengths = []
-    parsed_data.each do |track|
-      track_lengths << track['media']['track'][0]['Duration'].to_f
+    if parsed_data.count > 1
+      parsed_data.each do |track|
+        track_lengths << track['media']['track'][0]['Duration'].to_f
+      end
+    else
+      track_lengths << parsed_data['media']['track'][0]['Duration'].to_f
     end
     time_info = {"total_length" => track_lengths.sum}
     log_file = "#{Output_dir}/CD_#{cd_iterator.to_s}.log"
@@ -31,5 +35,5 @@ loop do
     cd_iterator += 1
     prior_drive_info = drive_info
   end
-  sleep 45
+  sleep 60
 end

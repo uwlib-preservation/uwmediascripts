@@ -1,6 +1,6 @@
 # UW Media Scripts
 
-These scripts, for the most part, assume and environment that has been configured with several A/V specific tools available on the PATH. These include, mediainfo, ffmpeg, bwfmetaedit and flac.
+These scripts, for the most part, assume an environment that has been configured with several A/V specific tools available on the PATH. These include, mediainfo, ffmpeg, bwfmetaedit and flac.
 
 **batchbext.rb**
   - Tool for batch embedding the metadata settings stored in the `uwmetaedit2` config file into multiple WAV files. Relies on UW's preferred naming convention to parse corrctly.

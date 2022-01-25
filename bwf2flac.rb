@@ -64,8 +64,8 @@ def decompress(target)
       f.puts cueSheet
       f.rewind
     end
-    updateCue(@cuePath,'wav')
   end
+  updateCue(@cuePath,'wav')
   `flac -d --keep-foreign-metadata --preserve-modtime --verify #{target}`
 end
 

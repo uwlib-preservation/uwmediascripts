@@ -1,5 +1,14 @@
 require 'json'
 
+class String
+  def colorize(color_code)
+    "\e[#{color_code}m#{self}\e[0m"
+  end
+  def red
+    colorize(31)
+  end
+end
+
 target_dir = ARGV[0].tr("\\","/")
 @waves = Dir.glob("#{target_dir}/*.wav")
 @logs = Dir.glob("#{target_dir}/*.log")
@@ -15,6 +24,6 @@ wavesSorted.each_with_index do |wave, index|
   if log_time == wave_time
     puts "PASS!"
   else
-    puts "FAIL!!"
+    puts "FAIL!!".red
   end
 end

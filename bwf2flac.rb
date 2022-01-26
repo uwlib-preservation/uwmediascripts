@@ -41,7 +41,7 @@ def compress(target)
     date = @targetMetadata['media']['track'][0]['Encoded_Date']
     sourcemedia = @targetMetadata['media']['track'][0]['Encoded_Library_Settings']
     contact = 'https://www.lib.washington.edu/'
-    bextCommand = "--set-tag=ORGANIZATION='#{organization}' --set-tag=DESCRIPTION='#{description}' --set-tag=DATE='#{date}' --set-tag=SOURCEMEDIA='#{sourcemedia}' --set-tag=CONTACT='#{contact}' "
+    bextCommand = "--set-tag=ORGANIZATION='#{organization}' --set-tag=DESCRIPTION='#{description}' --set-tag=DATE='#{date}' --set-tag=SOURCEMEDIA='#{sourcemedia}' --set-tag=CONTACT='#{contact}' --set-tag=COMMENT='Includes embedded BEXT metadata' "
     tagCommand += bextCommand
   end
 
@@ -64,8 +64,8 @@ def decompress(target)
       f.puts cueSheet
       f.rewind
     end
-    updateCue(@cuePath,'wav')
   end
+  updateCue(@cuePath,'wav')
   `flac -d --keep-foreign-metadata --preserve-modtime --verify #{target}`
 end
 

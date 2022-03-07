@@ -45,7 +45,7 @@ def compress(target)
     tagCommand += bextCommand
   end
 
-  compressCommand = "flac -f --best --keep-foreign-metadata --preserve-modtime --verify '#{target}'"
+  compressCommand = "flac -f --best --keep-foreign-metadata --preserve-modtime --verify --delete-input-file '#{target}'"
   system(compressCommand)
   if File.exist?(@cuePath)
     updateCue(@cuePath,'flac')
@@ -66,7 +66,7 @@ def decompress(target)
     end
   end
   updateCue(@cuePath,'wav')
-  `flac -d --keep-foreign-metadata --preserve-modtime --verify #{target}`
+  `flac -d --keep-foreign-metadata --preserve-modtime --verify --delete-input-file #{target}`
 end
 
 ARGV.each do |target|

@@ -55,8 +55,8 @@ wavesSorted.each_with_index do |wave,index|
     cuePath = rootName + '.cue'
     updateCue(cuePath,index) if File.exist?(cuePath)
     FileUtils.mv(wave,newName + '.wav')
-    FileUtils.mv(rootName + '.log', newName + '.log')
-    FileUtils.mv(rootName + '.consolelog', newName + '.consolelog')
+    FileUtils.mv(rootName + '.log', newName + '.log') if File.exist?(rootName + '.log')
+    FileUtils.mv(rootName + '.consolelog', newName + '.consolelog') if File.exist?(rootName + '.consolelog')
   else
     puts "File #{newName} already exists! Skipping!"
   end

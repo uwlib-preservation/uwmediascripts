@@ -1,5 +1,6 @@
 require 'tempfile'
 require 'optparse'
+require 'yaml'
 
 ARGV.options do |opts|
   opts.on("-o", "--output-dir=val", String)  { |val| ProjectDir = val.tr("\\", "/") }
@@ -10,10 +11,15 @@ ARGV.options do |opts|
   opts.parse!
 end
 
-CLI_Tools_Path = 'C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/'
-LoadPath = CLI_Tools_Path + "Load/Load.exe"
-UnloadPath = CLI_Tools_Path + "UnLoad/UnLoad.exe"
-Drive = 'G'
+scriptPath = __dir__
+configPath = scriptPath + "/ripcd.config"
+configOptions = YAML.load(File.read(configPath))
+
+CLI_Tools_Path = configOptions['CLI_Tools_Path']
+LoadPath = configOptions['LoadPath']
+UnloadPath = configOptions['UnloadPath']
+Drive = configOptions['Drive']
+
 
 def loadDisc()
   tempFile1 = Tempfile.new('batchRipping')

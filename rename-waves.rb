@@ -49,11 +49,14 @@ end
 safetyCheck()
 wavesSorted = @waves.sort_by {|filename| File.mtime(filename) }
 wavesSorted.each_with_index do |wave,index|
-  newName = "#{File.dirname(wave)}/#{@newFileNames[index].chomp}.wav"
+  newName = "#{File.dirname(wave)}/#{@newFileNames[index].chomp}"
+  rootName = "#{File.dirname(wave)}/#{File.basename(wave,".*")}"
   unless File.exist?(newName)
-    cuePath = "#{File.dirname(wave)}/#{File.basename(wave,".*")}" + '.cue'
+    cuePath = rootName + '.cue'
     updateCue(cuePath,index) if File.exist?(cuePath)
-    FileUtils.mv(wave,newName)
+    FileUtils.mv(wave,newName + '.wav')
+    FileUtils.mv(rootName + '.log', newName + '.log')
+    FileUtils.mv(rootName + '.consolelog', newName + '.consolelog')
   else
     puts "File #{newName} already exists! Skipping!"
   end

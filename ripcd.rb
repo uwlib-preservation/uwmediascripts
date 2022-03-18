@@ -1,0 +1,88 @@
+require 'tempfile'
+require 'optparse'
+
+ARGV.options do |opts|
+  opts.on("-o", "--output-dir=val", String)  { |val| ProjectDir = val.tr("\\", "/") }
+  opts.on("-d", "--discs=val", String) { |val| DiscTotal = val.to_i }
+  opts.on("-b", "--burst") { Mode = '-B' }
+  opts.on("-s", "--secure") { Mode = '-S' }
+  opts.on("-p", "--paranoid") { Mode = '-P' }
+  opts.parse!
+end
+
+CLI_Tools_Path = 'C:/Program Files/dBpoweramp/BatchRipper/Loaders/Nimbie/'
+LoadPath = CLI_Tools_Path + "Load/Load.exe"
+UnloadPath = CLI_Tools_Path + "UnLoad/UnLoad.exe"
+Drive = 'G'
+
+def loadDisc()
+  tempFile1 = Tempfile.new('batchRipping')
+  tempFile2 = Tempfile.new('batchRipping')
+  system(LoadPath, "--drive=#{Drive}", '--rejectifnodisc' "--logfile=#{tempFile1.path}", "--passerrorsback=#{tempFile2.path}")
+  puts "\n"
+end
+
+def unloadDisc()
+  tempFile1 = Tempfile.new('batchRipping')
+  tempFile2 = Tempfile.new('batchRipping')
+  system(UnloadPath, "--drive=#{Drive}", '--rejectifnodisc' "--logfile=#{tempFile1.path}", "--passerrorsback=#{tempFile2.path}")
+  puts "\n"
+end
+
+def ripDisc()
+  puts "Ripping disc: #{@discNumber}"
+  `powershell "Start-Transcript -Append #{ProjectDir}/cdimage.consolelog ; CUETools.Ripper.Console.exe -D #{Drive} #{Mode} ; Stop-Transcript"`
+end
+
+def checkRipError()
+  ripLog = File.readlines("#{ProjectDir}/cdimage.consolelog")
+  ripResults = ripLog["#{ripLog.count - 5}".to_i]
+  if ripResults.include?('Results')
+    ripExit = 4
+  else
+    ripExit = 1
+  end
+end
+def renameOutput(file,time,status)
+  outName = 'cdrip-'
+  outName.prepend('FAIL_') if status == 'fail'
+  dir = File.dirname(file)
+  ext = File.extname(file)
+  outputFile = dir + '/' + outName + time + ext
+  File.rename(file,outputFile)
+end
+
+# Start process
+@discNumber = 1
+Dir.chdir(ProjectDir)
+while @discNumber <= DiscTotal do
+  ripAttempt = 1
+  # need to test this loop!
+  loadDisc()
+  while ripAttempt <=4
+    ripDisc()
+    ripAttempt += checkRipError()
+  end
+  unloadDisc()
+  time = Time.now.strftime("%m%d%H%M%S")
+  outputFiles = Dir.glob("#{ProjectDir}/cdimage*")
+  if outputFiles.length == 4
+    ripLog = File.readlines("#{ProjectDir}/cdimage.consolelog")
+    ripResults = ripLog["#{ripLog.count - 5}".to_i]
+    puts ripResults
+    outputFiles.each {|file| renameOutput(file, time, 'pass')}
+    csvLine = "#{@discNumber}, cdrip-#{time}, #{ripResults}"
+    open("#{ProjectDir}/rip-log.txt", 'a') { |f| f.puts csvLine}
+     @discNumber += 1
+  else
+    csvLine = "#{@discNumber}, FAIL, FAIL"
+    puts "Rip Failed!"
+    outputFiles.each {|file| renameOutput(file, time, 'fail')}
+    @discNumber += 1
+    open("#{ProjectDir}/rip-log.txt", 'a') { |f| f.puts csvLine}
+    #********** NEED TO RENAME CONSOLE LOG!!********
+    next
+  end
+end
+sleep 5
+puts "All done!!"

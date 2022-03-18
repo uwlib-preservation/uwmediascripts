@@ -1,0 +1,6 @@
+---
+CLI_Tools_Path:''
+LoadPath:CLI_Tools_Path + "Load/Load.exe"
+UnloadPath:CLI_Tools_Path + "UnLoad/UnLoad.exe"
+Drive:''
+

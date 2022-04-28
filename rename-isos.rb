@@ -1,5 +1,6 @@
 require 'csv'
 
+# input must be single iromlab batch csv file
 input = ARGV[0]
 metadata = CSV.open(input)
 metadata.shift

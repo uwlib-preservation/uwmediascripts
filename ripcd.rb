@@ -12,12 +12,12 @@ ARGV.options do |opts|
 end
 
 scriptPath = __dir__
-configPath = scriptPath + "/ripcd.config"
-configOptions = YAML.load(File.read(configPath))
+configPath = scriptPath + "/ripcd.config.txt"
+configOptions = YAML.load_file(configPath)
 
 CLI_Tools_Path = configOptions['CLI_Tools_Path']
-LoadPath = configOptions['LoadPath']
-UnloadPath = configOptions['UnloadPath']
+LoadPath =  CLI_Tools_Path + configOptions['LoadPath']
+UnloadPath =  CLI_Tools_Path + configOptions['UnloadPath']
 Drive = configOptions['Drive']
 
 

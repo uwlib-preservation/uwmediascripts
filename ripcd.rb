@@ -16,10 +16,10 @@ configPath = scriptPath + "/ripcd.config.txt"
 configOptions = YAML.load_file(configPath)
 
 CLI_Tools_Path = configOptions['CLI_Tools_Path']
+CueToolsPath = configOptions['CueToolsPath']
 LoadPath =  CLI_Tools_Path + configOptions['LoadPath']
 UnloadPath =  CLI_Tools_Path + configOptions['UnloadPath']
 Drive = configOptions['Drive']
-
 
 def loadDisc()
   tempFile1 = Tempfile.new('batchRipping')
@@ -37,7 +37,7 @@ end
 
 def ripDisc()
   puts "Ripping disc: #{@discNumber}"
-  `powershell "Start-Transcript -Append #{ProjectDir}/cdimage.consolelog ; CUETools.Ripper.Console.exe -D #{Drive} #{Mode} ; Stop-Transcript"`
+  `powershell "Start-Transcript -Append #{ProjectDir}/cdimage.consolelog ; #{CueToolsPath} -D #{Drive} #{Mode} ; Stop-Transcript"`
 end
 
 def checkRipError()

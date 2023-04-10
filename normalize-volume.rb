@@ -57,7 +57,7 @@ def clean_up_files(targets, mezzanines, access_files)
   Dir.mkdir(mezzanine)
   Dir.mkdir(preservationFiles)
   targets.each {|file| FileUtils.mv(file, preservationFiles)}
-  mezzanines.each {|file| FileUtils.mv(file, mezzanineFiles)}
+  @mezzanines.each {|file| FileUtils.mv(file, mezzanineFiles)}
   access_files.each {|file| FileUtils.mv(file, accessFiles)}
 end
 

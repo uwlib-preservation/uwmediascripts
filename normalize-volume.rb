@@ -50,14 +50,14 @@ def make_access(target)
 end
 
 def clean_up_files(targets, mezzanines, access_files)
-  access = "#{ARGV[0]}/access"
+  accessFiles = "#{ARGV[0]}/accessFiles"
   mezzanine = "#{ARGV[0]}/mezzanine"
   preservationFiles = "#{ARGV[0]}/preservationFiles"
-  Dir.mkdir(access)
+  Dir.mkdir(accessFiles)
   Dir.mkdir(mezzanine)
   Dir.mkdir(preservationFiles)
   targets.each {|file| FileUtils.mv(file, preservationFiles)}
-  @mezzanines.each {|file| FileUtils.mv(file, mezzanineFiles)}
+  mezzanines.each {|file| FileUtils.mv(file, mezzanine)}
   access_files.each {|file| FileUtils.mv(file, accessFiles)}
 end
 

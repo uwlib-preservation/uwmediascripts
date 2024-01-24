@@ -17,6 +17,9 @@ These scripts, for the most part, assume an environment that has been configured
 **get_cd_meta.rb** 
   - Creates logfiles containing the length of each audio CD inserted into target drive while script is looping. Used in combination with `compare_times.rb`
 
+**metsparse**
+  - Will create a list of all files in input METS file(s). Usage is metsparse.rb [Directory with METS file(s)]
+
 **rename-waves.rb**
   - Used to batch rename WAV files (in order of file creation time).
 

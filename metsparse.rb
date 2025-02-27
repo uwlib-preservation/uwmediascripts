@@ -5,7 +5,8 @@ def parseMETS(input)
   metsXML =  Nokogiri::XML(File.read(input))
   metsXML.remove_namespaces!
   files = metsXML.xpath("//originalName")
-  files.each {|file| fileManifest << File.basename(file.inner_text)}
+  files.each {|file| fileManifest << "\t" + File.basename(file.inner_text)}
+  fileManifest[0].strip!
   fileManifest << "\n"
 end
 
